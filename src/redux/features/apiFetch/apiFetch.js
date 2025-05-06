@@ -12,7 +12,7 @@ export const fetchIplData = createAsyncThunk(
       const options = {
         method: "GET",
         headers: {
-          "x-rapidapi-key": "73bdf95549mshef9acf5750702abp102124jsn9dcc9be9e2ac",
+          "x-rapidapi-key": "479fe899fdmsh2dbe00ffa7859f2p171596jsne5ff2cf23d87",
           "x-rapidapi-host": "cricbuzz-cricket.p.rapidapi.com",
         },
       };
@@ -22,6 +22,24 @@ export const fetchIplData = createAsyncThunk(
         throw new Error("Failed to fetch one or more API endpoints.");
       }
 
+      const url1= 'https://cricket-api-free-data.p.rapidapi.com/cricket-players?teamid=2';
+      const options1 = {
+        method: 'GET',
+        headers: {
+          'x-rapidapi-key': '479fe899fdmsh2dbe00ffa7859f2p171596jsne5ff2cf23d87',
+          'x-rapidapi-host': 'cricket-api-free-data.p.rapidapi.com'
+        }
+      };
+      
+      try {
+        const response = await fetch(url1, options1);
+        const result = await response.json();
+        console.log(result);
+      } catch (error) {
+        console.error(error);
+      }
+         
+        
       const result1 = await response1.json();
       const result2 = await response2.json();
       const result3 = await response3.json();
