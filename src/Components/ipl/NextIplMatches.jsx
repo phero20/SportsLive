@@ -1,0 +1,101 @@
+import React from "react";
+import lsg from "../../assets/LSG.png";
+import gt from "../../assets/GT.png";
+import { useSelector } from "react-redux";
+import logoIpl from "../../assets/iplLogo.svg";
+
+export default function NextIplMatches() {
+  const { matches, loading, error } = useSelector((state) => state.matches);
+  const matchesData = Object.values(matches).length > 0 ? matches : null;
+  const filteredMatches = matchesData
+  ? Object.values(matchesData)
+      .filter((match) => {
+        const dateStr = match.Date?.toLowerCase();
+        return dateStr !== "today";
+      })
+      .sort((a, b) => {
+        const dateA = a.Date?.toLowerCase();
+        const dateB = b.Date?.toLowerCase();
+
+        if (dateA === "tomorrow") return -1;
+        if (dateB === "tomorrow") return 1;
+
+        const parsedA = Date.parse(a.Date);
+        const parsedB = Date.parse(b.Date);
+
+        if (isNaN(parsedA) || isNaN(parsedB)) return 0;
+
+        return parsedA - parsedB;
+      })
+      .map(match => ({
+        ...match,
+        teams: match.Rival?.split(/\s+/).filter(w => w.toLowerCase() !== "vs") || []
+      }))
+  : [];
+
+
+    const t1 = matchesData?.["Match 1"]?.Rival
+    ?.split(/\s+/)
+    .filter(word => word.toLowerCase() !== "vs");
+  
+   const teamImageGenerator = (teamName) => {
+     const teamLogos = {
+       RCB: "https://assets.ccbp.in/frontend/react-js/rcb-logo-img.png",
+       CSK: "https://assets.ccbp.in/frontend/react-js/csk-logo-img.png",
+       DC: "https://assets.ccbp.in/frontend/react-js/dc-logo-img.png",
+       SRH: "https://assets.ccbp.in/frontend/react-js/srh-logo-img.png",
+       KKR: "https://assets.ccbp.in/frontend/react-js/kkr-logo-img.png",
+       MI: "https://assets.ccbp.in/frontend/react-js/mi-logo-img.png",
+       RR: "https://assets.ccbp.in/frontend/react-js/rr-logo-img.png",
+       PBKS: "https://assets.ccbp.in/frontend/react-js/kxp-logo-img.png",
+       GT: gt,
+       LSG: lsg,
+     };
+     return teamLogos[teamName] || logoIpl;
+   };
+
+
+  return (
+    <div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 sm:gap-0 gap-3 py-3 box-border">
+        {filteredMatches.map((match, index) => (
+          <div
+            key={index}
+            className="p-6 px-6 border border-gray-300 dark:border-gray-700 sm:my-3 mx-3 rounded-2xl"
+          >
+            <div className="flex justify-between text-gray-500 text-sm">
+              <p className="">IPL · {match.Date}</p>
+              <p>{match.Time}</p>
+            </div>
+
+            <div className="w-full text-black dark:text-white">
+              <div className="flex justify-between items-center py-6 text-sm font-medium">
+                <div className="flex flex-col items-center gap-2">
+                  <img src={teamImageGenerator(match.teams[0])} alt="team1" className="w-10" />
+
+                  <p className="px-1">{match.teams[0]}</p>
+                </div>
+
+                <div className="">VS</div>
+
+                <div className="flex flex-col items-center gap-2">
+                  <img src={teamImageGenerator(match.teams[1])} alt="team2" className="w-10" />
+
+                  <p className="px-1">{match.teams[1]}</p>
+                </div>
+              </div>
+
+              <p className="border-b border-gray-300 dark:border-gray-700 text-sm text-blue-700 pb-1">
+                <span className="text-gray-500 dark:text-gray-400">
+                  Venue :{" "}
+                </span>
+
+                {match.Location}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
