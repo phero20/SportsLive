@@ -78,7 +78,7 @@ export default function Table() {
   };
 
   if (localLoading) {
-    return <p className="text-center flex justify-center items-center"><Loading /></p>;
+     return <div className="text-center flex justify-center items-center"><Loading /></div>;
   }
 
   return (

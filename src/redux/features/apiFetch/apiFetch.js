@@ -34,59 +34,62 @@ export const fetchPlayers = createAsyncThunk(
   "matches/fetchPlayers",
   async (_, { rejectWithValue }) => {
     try {
-      const response1 = await fetch("https://sports-backend-pcf6.onrender.com/api/ipl-live");
-      const response2 = await fetch("https://sports-backend-pcf6.onrender.com/api/scores");
-      const response3 = await fetch("https://sports-backend-pcf6.onrender.com/api/points-table");
-      
-      const url = "https://cricbuzz-cricket.p.rapidapi.com/matches/v1/recent";
-      const options = {
-        method: "GET",
-        headers: {
-          "x-rapidapi-key": "479fe899fdmsh2dbe00ffa7859f2p171596jsne5ff2cf23d87",
-          "x-rapidapi-host": "cricbuzz-cricket.p.rapidapi.com",
-        },
-      };
-      const response4 = await fetch(url, options);
+      const response = await fetch(
+        "https://sports-backend-pcf6.onrender.com/api/players"
+      );
+      return await response.json();
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
 
-      if (!response1.ok || !response2.ok || !response3.ok || !response4.ok) {
-        throw new Error("Failed to fetch one or more API endpoints.");
+export const fetchPreviousMatches = createAsyncThunk(
+  "matches/fetchPreviousMatches",
+  async (_, { rejectWithValue }) => {
+    const url = "https://cricbuzz-cricket.p.rapidapi.com/matches/v1/recent";
+    const apiKeys = [
+      "73bdf95549mshef9acf5750702abp102124jsn9dcc9be9e2ac",
+      "0ce6c19b5cmsh745281674507dc1p19c7aajsn972189d87d01",
+      "225de374aamshae091e8b45f42aap159aa5jsna9afa85d0339",
+      "eb1dd8c8bemsh9d4a79a1b8ee204p1014fejsn6fb2d2d98933",
+    ];
+
+    try {
+      for (const key of apiKeys) {
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "x-rapidapi-key": key,
+            "x-rapidapi-host": "cricbuzz-cricket.p.rapidapi.com",
+          },
+        });
+        if (response.ok) return await response.json();
       }
+      throw new Error("All API keys failed");
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
 
-      const url1= 'https://cricket-api-free-data.p.rapidapi.com/cricket-players?teamid=2';
-      const options1 = {
-        method: 'GET',
-        headers: {
-          'x-rapidapi-key': '479fe899fdmsh2dbe00ffa7859f2p171596jsne5ff2cf23d87',
-          'x-rapidapi-host': 'cricket-api-free-data.p.rapidapi.com'
+
+export const fetchScoreCad = createAsyncThunk(
+  "matches/fetchScoreCad",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch(
+        "https://cricket-api-free-data.p.rapidapi.com/cricket-livescores",
+        {
+          method: "GET",
+          headers: {
+            "x-rapidapi-key":
+              "0ce6c19b5cmsh745281674507dc1p19c7aajsn972189d87d01",
+            "x-rapidapi-host": "cricket-api-free-data.p.rapidapi.com",
+          },
         }
-      };
-      
-      try {
-        const response = await fetch(url1, options1);
-        const result = await response.json();
-        console.log(result);
-      } catch (error) {
-        console.error(error);
-      }
-         
-        
-      const result1 = await response1.json();
-      const result2 = await response2.json();
-      const result3 = await response3.json();
-      const result4 = await response4.json();
-      console.log(result4);
-      // Filtering IPL matches
-      const today = new Date().toISOString().slice(0, 10);
-      const iplMatchesToday = result1.matches.filter((match) => {
-        const isIPLMatch =
-          match.series &&
-          match.series.toLowerCase().includes("indian premier league");
-        const matchDate1 = match.dateTimeGMT.split("T")[0];
-
-        return isIPLMatch && matchDate1 === today;
-      });
-
-      return { matches: result2, iplMatches: iplMatchesToday, pointsTable: result3, previousMatches: result4 };
+      );
+      return await response.json();
     } catch (err) {
       return rejectWithValue(err.message);
     }
