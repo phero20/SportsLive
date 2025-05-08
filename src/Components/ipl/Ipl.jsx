@@ -1,14 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import logo from "../../assets/iplLogo.svg";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchIplData } from "../../redux/features/apiFetch/apiFetch";
+
 import { NavLink, Outlet } from "react-router-dom";
 
 export default function Ipl() {
-  const tabs = ["MATCHES", "TABLE", "WINNERS", "STATS"];
-
-  const { pointsTable, loading, error } = useSelector((state) => state.matches);
-      //  console.log(pointsTable)
+  const tabs = ["MATCHES", "TABLE", "WINNERS", "PLAYERS"];
 
   return (
     <div className="w-screen flex justify-center my-5 mt-24">
@@ -24,7 +20,6 @@ export default function Ipl() {
             </div>
           </div>
 
-          {/* Tabs with NavLink */}
           <ul className="flex justify-between text-base font-medium pb-1 w-full">
             {tabs.map((tab) => {
               const tabPath = tab.toLowerCase();
@@ -48,26 +43,10 @@ export default function Ipl() {
           </ul>
         </div>
 
-        {/* Child route content */}
         <div className="md:p-6 p-1">
-          {loading ? (
-            <p className="text-center text-gray-500">Loading...</p>
-          ) : error ? (
-            <p className="text-center text-red-500">Error: {error}</p>
-          ) : (
-            <Outlet />
-          )}
+          <Outlet />
         </div>
       </div>
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
