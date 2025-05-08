@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 export default function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -6,7 +6,6 @@ export default function Nav() {
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-gray-100 border-gray-200 dark:bg-gray-950 dark:border-gray-700">
-
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a href="#" className="flex items-center space-x-3 rtl:space-x-reverse">
           <img
@@ -47,9 +46,7 @@ export default function Nav() {
 
         {/* Mobile Menu */}
         <div
-          className={`${
-            menuOpen ? '' : 'hidden'
-          } w-full md:block md:w-auto`}
+          className={`${menuOpen ? "" : "hidden"} w-full md:block md:w-auto`}
           id="navbar-dropdown"
         >
           <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-100 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-gray-100 dark:bg-gray-950 md:dark:bg-gray-950 dark:border-gray-700">

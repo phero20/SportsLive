@@ -1,7 +1,37 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import dc from "../../../assets/DC.png";
+import gt from "../../../assets/GT.png";
 
-export const fetchIplData = createAsyncThunk(
-  "matches/fetchIplData",
+export const fetchMatches = createAsyncThunk(
+  "matches/fetchMatches",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch(
+        "https://sports-backend-pcf6.onrender.com/api/scores"
+      );
+      return await response.json();
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+export const fetchPointsTable = createAsyncThunk(
+  "matches/fetchPointsTable",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch(
+        "https://sports-backend-pcf6.onrender.com/api/points-table"
+      );
+      return await response.json();
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+export const fetchPlayers = createAsyncThunk(
+  "matches/fetchPlayers",
   async (_, { rejectWithValue }) => {
     try {
       const response1 = await fetch("https://sports-backend-pcf6.onrender.com/api/ipl-live");
@@ -63,52 +93,153 @@ export const fetchIplData = createAsyncThunk(
   }
 );
 
-// Initial state
+
 const initialState = {
   matches: [],
-  iplMatches: [],
   pointsTable: [],
-  previuosMatches: [],
+  previousMatches: [],
+  players: [],
+  scoreCad: [],
+  winners: [
+    {
+      year: 2008,
+      team: "Rajasthan Royals",
+      rival: "Chennai Super Kings",
+      image_url: "https://assets.ccbp.in/frontend/react-js/rr-logo-img.png",
+    },
+    {
+      year: 2009,
+      team: "Deccan Chargers",
+      rival: "Royal Challengers Bangalore",
+      image_url: dc,
+    },
+    {
+      year: 2010,
+      team: "Chennai Super Kings",
+      rival: "Mumbai Indians",
+      image_url: "https://assets.ccbp.in/frontend/react-js/csk-logo-img.png",
+    },
+    {
+      year: 2011,
+      team: "Chennai Super Kings",
+      rival: "Royal Challengers Bangalore",
+      image_url: "https://assets.ccbp.in/frontend/react-js/csk-logo-img.png",
+    },
+    {
+      year: 2012,
+      team: "Kolkata Knight Riders",
+      rival: "Chennai Super Kings",
+      image_url: "https://assets.ccbp.in/frontend/react-js/kkr-logo-img.png",
+    },
+    {
+      year: 2013,
+      team: "Mumbai Indians",
+      rival: "Chennai Super Kings",
+      image_url: "https://assets.ccbp.in/frontend/react-js/mi-logo-img.png",
+    },
+    {
+      year: 2014,
+      team: "Kolkata Knight Riders",
+      rival: "Kings XI Punjab",
+      image_url: "https://assets.ccbp.in/frontend/react-js/kkr-logo-img.png",
+    },
+    {
+      year: 2015,
+      team: "Mumbai Indians",
+      rival: "Chennai Super Kings",
+      image_url: "https://assets.ccbp.in/frontend/react-js/mi-logo-img.png",
+    },
+    {
+      year: 2016,
+      team: "Sunrisers Hyderabad",
+      rival: "Royal Challengers Bangalore",
+      image_url: "https://assets.ccbp.in/frontend/react-js/srh-logo-img.png",
+    },
+    {
+      year: 2017,
+      team: "Mumbai Indians",
+      rival: "Rising Pune Supergiant",
+      image_url: "https://assets.ccbp.in/frontend/react-js/mi-logo-img.png",
+    },
+    {
+      year: 2018,
+      team: "Chennai Super Kings",
+      rival: "Sunrisers Hyderabad",
+      image_url: "https://assets.ccbp.in/frontend/react-js/csk-logo-img.png",
+    },
+    {
+      year: 2019,
+      team: "Mumbai Indians",
+      rival: "Chennai Super Kings",
+      image_url: "https://assets.ccbp.in/frontend/react-js/mi-logo-img.png",
+    },
+    {
+      year: 2020,
+      team: "Mumbai Indians",
+      rival: "Delhi Capitals",
+      image_url: "https://assets.ccbp.in/frontend/react-js/mi-logo-img.png",
+    },
+    {
+      year: 2021,
+      team: "Chennai Super Kings",
+      rival: "Kolkata Knight Riders",
+      image_url: "https://assets.ccbp.in/frontend/react-js/csk-logo-img.png",
+    },
+    {
+      year: 2022,
+      team: "Gujarat Titans",
+      rival: "Rajasthan Royals",
+      image_url: gt,
+    },
+    {
+      year: 2023,
+      team: "Chennai Super Kings",
+      rival: "Gujarat Titans",
+      image_url: "https://assets.ccbp.in/frontend/react-js/csk-logo-img.png",
+    },
+    {
+      year: 2024,
+      team: "Kolkata Knight Riders",
+      rival: "Sunrisers Hyderabad",
+      image_url: "https://assets.ccbp.in/frontend/react-js/kkr-logo-img.png",
+    },
+  ],
   loading: false,
   error: null,
 };
 
-export const scoreSlice = createSlice({
+
+const scoreSlice = createSlice({
   name: "matches",
   initialState,
-  reducers: {
-    fetchSuccess: (state, action) => {
-      state.matches = action.payload;
-    },
-    iplMatches: (state, action) => {
-      state.iplMatches = action.payload;
-    },
-    pointsTable: (state, action) => {
-      state.pointsTable = action.payload;
-    },
-    previuosMatches: (state, action) => {
-      state.previuosMatches = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchIplData.pending, (state) => {
+      .addCase(fetchMatches.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
-      .addCase(fetchIplData.fulfilled, (state, action) => {
+      .addCase(fetchMatches.fulfilled, (state, action) => {
+        state.matches = action.payload;
         state.loading = false;
-        state.matches = action.payload.matches;
-        state.iplMatches = action.payload.iplMatches;
-        state.pointsTable = action.payload.pointsTable;
-        state.previuosMatches = action.payload.previousMatches; // ✅ Fixed logic
       })
-      .addCase(fetchIplData.rejected, (state, action) => {
-        state.loading = false;
+      .addCase(fetchMatches.rejected, (state, action) => {
         state.error = action.payload;
+        state.loading = false;
+      })
+
+      .addCase(fetchPointsTable.fulfilled, (state, action) => {
+        state.pointsTable = action.payload;
+      })
+      .addCase(fetchPlayers.fulfilled, (state, action) => {
+        state.players = action.payload;
+      })
+      .addCase(fetchPreviousMatches.fulfilled, (state, action) => {
+        state.previousMatches = action.payload;
+      })
+      .addCase(fetchScoreCad.fulfilled, (state, action) => {
+        state.scoreCad = action.payload;
       });
   },
 });
 
-export const { fetchSuccess, iplMatches, pointsTable, previuosMatches } = scoreSlice.actions;
 export default scoreSlice.reducer;
